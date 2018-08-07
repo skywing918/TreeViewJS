@@ -1,0 +1,216 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css" />
+    <script src="jquery-3.2.1.js"></script>
+    <script src="knockout-3.4.2.js"></script>
+    <script src="knockout.mapping.js"></script>
+    <script src="treeview.js"></script>
+
+    <script>
+        var __sampleData = {
+            navTree: {
+                nodes: [
+                    {
+                        id:1,
+                        name: 'Size',
+                        description: 'test description!',
+                        objectId: 0,
+                        isExpanded: true,
+                        hasCheckBox: false,
+                        hasIcon: true,
+                        icon: 'glyphicon glyphicon-list-alt',
+                        hasChild: true,
+                        nodes: [
+                            {
+                                id:2,
+                                parentId:1,
+                                name: '38{38}',
+                                description: 'test description!',
+                                objectId: 1,
+                                hasCheckBox: true,
+                                icon: '',
+                                hasChild: true,
+                                reportTo: 0,
+                                nodes: [
+                                     {
+                                         id:5,
+                                         parentId:2,
+                                         name: 'Product',
+                                         description: 'test description!',
+                                         objectId: 2,
+                                         hasCheckBox: false,
+                                         hasIcon: true,
+                                         hasChild: true,
+                                         icon: 'glyphicon glyphicon-list-alt',
+                                         reportTo: 1,
+                                         nodes: [
+                                             {
+                                                 id:6,
+                                                 parentId:5,
+                                                 name: 'FR-M94BB-38',
+                                                 description: 'test description!',
+                                                 objectId: 3,
+                                                 hasCheckBox: true,
+                                                 icon: '',
+                                                 reportTo: 2,
+                                                 nodes: [
+                                                 ]
+                                             },
+                                              {
+                                                  id:7,
+                                                  parentId:5,
+                                                  name: 'FR-M94BS-38',
+                                                  description: 'test description!',
+                                                  objectId: 4,
+                                                  hasCheckBox: true,
+                                                  hasIcon: false,
+                                                  icon: '',
+                                                  reportTo: 2,
+                                                  nodes: [
+                                                  ]
+                                              }
+                                         ]
+                                     }
+                                ]
+                            },
+                            {
+                                id:3,
+                                parentId:1,
+                                name: '40{40}',
+                                description: 'test description! asd',
+                                objectId: 5,
+                                hasCheckBox: true,
+                                hasChild: true,
+                                icon: '',
+                                reportTo: 0,
+                                nodes: [
+                                    {
+                                         id:8,
+                                         parentId:3,
+                                         name: 'Product',
+                                         description: 'test description!',
+                                         objectId: 6,
+                                         hasCheckBox: false,
+                                         hasIcon: true,
+                                         hasChild: true,
+                                         icon: 'glyphicon glyphicon-list-alt',
+                                         reportTo: 5,
+                                         nodes: [
+                                             {
+                                                 id:9,
+                                                 parentId:8,
+                                                 name: 'CN-M94BB-38',
+                                                 description: 'test description!',
+                                                 objectId: 7,
+                                                 hasCheckBox: true,
+                                                 icon: '',
+                                                 reportTo: 6,
+                                                 nodes: [
+                                                 ]
+                                             },
+                                              {
+                                                  id:10,
+                                                  parentId:8,
+                                                  name: 'CN-M94BS-38',
+                                                  description: 'test description!',
+                                                  objectId: 8,
+                                                  hasCheckBox: true,
+                                                  hasIcon: false,
+                                                  icon: '',
+                                                  reportTo: 6,
+                                                  nodes: [
+                                                  ]
+                                              }
+                                         ]
+                                     }
+                                ]
+                            },
+                            {
+                                id:4,
+                                parentId:1,
+                                name: '42{42}',
+                                description: 'test description! asd',
+                                objectId: 9,
+                                hasCheckBox: true,
+                                reportTo: 0,
+                                icon: '',
+                                nodes: [
+
+                                ]
+                            }
+                        ]
+                    },
+
+                ]
+            }
+        };
+
+        var viewMode = function () {
+            var self = this;
+
+            self.treeViewMode = new ko.treeView.viewModel({
+                data: __sampleData.navTree,
+                enableToolbox: true,
+                changed_selected: function (data) {
+                    console.log(data.name() + ' changed: select item !!');
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            var viewModel = new viewMode();
+            ko.applyBindings(viewModel);
+        });
+    </script>
+    <meta charset=utf-8 />
+    <title>Knockout TreeView</title>
+</head>
+<body>
+    <script type="text/html" id="tree-template">
+        <ul class="jstree-children jstree-wholerow-ul jstree-no-dots" data-bind="foreach: nodes">
+            <li class="jstree-node"
+                data-bind="attr:{id:id, parentId:parentId}, template: { name: 'node-name-template' , data: $data}, css:{'jstree-open' : isExpanded() && nodes().length>0, 'jstree-close': !isExpanded() && hasChild()}">
+            </li>
+        </ul>
+    </script>
+
+    <script type="text/html" id="folder-template">
+        <ul class="jstree-children" data-bind="visible: isExpanded, foreach: $data.nodes">
+            <li class="jstree-node" 
+                data-bind="attr:{id:id, parentId:parentId}, template: { name: 'node-name-template' , data: $data}, css:{'jstree-open' : isExpanded() && nodes().length>0, 'jstree-close': !isExpanded() && hasChild(), 'jstree-leaf':!hasChild()}">
+            </li>
+        </ul>
+    </script>
+    
+    <script type="text/html" id="node-name-template">
+        <div class="jstree-wholerow" data-bind="css:{'jstree-wholerow-clicked':isSelected}, click:toggleSelect">&nbsp;</div>
+        <i class="jstree-icon jstree-ocl" data-bind="click: toggleVisibility"></i>
+        <a class="jstree-anchor"  href="#" data-bind="css: { 'pointer-icon' : nodes().length>0,'jstree-checked':isChecked}, attr:{id:objectId}">
+            <i class="jstree-icon jstree-checkbox" data-bind="visible: hasCheckBox, click:toggleCheck"></i>
+            <i class="jstree-icon jstree-themeicon jstree-themeicon-custom" data-bind="css:icon, visible: hasIcon"></i>
+            <span data-bind="text: name, attr: { 'title' : description }, tooltip: { delay: { show: 500, hide: 10 } }, click:toggleSelect"></span>
+        </a>
+        <!-- ko if: nodes().length !== 0 -->
+        <div data-bind="template: { name: 'folder-template' , data: $data}"></div>
+        <!-- /ko -->
+    </script>
+
+    <hr />
+    <div data-bind="treeView:treeViewMode"></div>
+
+    <button data-bind="click: treeViewMode.uncheck_all()">111</button>
+
+    <hr />
+
+
+    <div id="jstree-dnd" class="jstree-default jstree-default-small"><i class="jstree-icon jstree-er"></i>text<ins class="jstree-copy" style="display:none;">+</ins></div>
+    <div id="jstree-dnd" class="jstree-default jstree-default-small"><i class="jstree-icon jstree-ok"></i>text<ins class="jstree-copy" style="display:none;">+</ins></div>
+    <div id="jstree-marker">&#160;</div>
+
+    <div id='vakata-dnd' style=""></div>
+
+
+</body>
+</html>
